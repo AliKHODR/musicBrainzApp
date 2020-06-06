@@ -1,38 +1,92 @@
-.App {
+body{
+  background-color:#444444 ;
+}
+.navbar{
+  border-bottom: #DEC11E 1px solid;
+}
+.header{
+  color: #DEC11E;
+  margin: auto;
+  padding: 1rem;
+
+}
+.form{
+  margin-left: 1rem;
+}
+.search-label{
+  color: #DEC11E;
+}
+.btn{
+  color: #444444;
+  background-color:#DEC11E ;
+  border: none;
+}
+
+.btn:hover{
+  color: #DEC11E;
+  background-color:#444444 ;
+
+}
+
+.table{
+  color: white;
+  background-color:#444444
+}
+.spinner-border{
+  margin: auto;
+  color: white;
+}
+.no-results{
+ color: #DEC11E;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.search-results{
+  color: #DEC11E;
+  margin-right:2rem ;
+  text-align: end;
+}
+.text-center{
+  color: #DEC11E;
+}
+.plus {
+  --t:2px;   /* Thickness */
+  --l:32px;  /* size of the symbol */
+  --s:10px;  /* space around the symbol */
+  --c1:#444444; /* Plus color*/
+  --c2:#DEC11E; /* background color*/
+
+  display:inline-block;
+  width:var(--l);
+  height:var(--l);
+  padding:var(--s);
+  box-sizing:border-box; /*Remove this if you don't want space to be included in the size*/
+
+  background:
+          linear-gradient(var(--c1),var(--c1)) content-box,
+          linear-gradient(var(--c1),var(--c1)) content-box,
+          var(--c2);
+  background-position:center;
+  background-size: 100% var(--t),var(--t) 100%;
+  background-repeat:no-repeat;
+  cursor:pointer;
+}
+.spinner-border{
+  color: #DEC11E;
+}
+.radius {
+  border-radius:50%;
+  margin-top: 10px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.modal.show{
+  display: block;
+}
+.modal-dialog{
+  overflow-y: initial;
+  min-width: 90% ;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.modal-body{
+  overflow-y: auto;
 }
