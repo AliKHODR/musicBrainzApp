@@ -6,7 +6,7 @@ import Header from "./components/Header";
 import RecordingContainer from "./components/RecordingContainer";
 import ActionModal from "./components/ActionModal";
 import Requests from './api/musicBrainzApi';
-
+import renderIf from "./helpers/renderIf";
 class App extends Component{
     constructor(props) {
         super(props);
@@ -14,54 +14,60 @@ class App extends Component{
             results : [],
             recordingCount : null,
             isLoading :false,
-            search : '',
-            choice:'',
-            offset:null,
             entityId : '',
-            showModal : false
+            showModal : false,
+            showMoreResultsButton: false,
+        }
+        this.currentQuery = {
+            offset: 0,
+            search: '',
+            choice: '',
         }
     }
 
-    getResults = (search,choice,offset)=>{
-        if(this.state.search !== search || this.state.choice !== choice){
-            this.setState({
-                results:[]
-            })
+    getResults = (search,choice,offset=0)=>{
+        this.setState({
+            isLoading:!this.state.isLoading
+        });
+        //reinitialize offset to 0 when user clicks the search button
+        if(offset === 0){
+            this.currentQuery.offset = 0;
         }
-        if(this.state.offset === offset) return;
+        Requests.getRecordings(search,choice,offset).then(res=>{
+            this.currentQuery = {
+                offset: this.currentQuery.offset + 100,
+                search: search,
+                choice: choice,
+            };
+            this.setState({
+                results: offset===0 ? res.recordings :[...this.state.results,...res.recordings],
+                recordingCount : res.count,
+                showMoreResultsButton: this.currentQuery.offset < res.count,
+                isLoading:false,
+            });
+        }).catch(err =>console.log(err));
+    }
+
+  /*   changeLoading = (loading=true)=>{
         this.setState({
             isLoading:true
-        })
-        Requests.getRecordings(search,choice,offset).then(res=>{
-            this.setState({
-                results:[...this.state.results,...res.recordings],
-                recordingCount : res.count,
-                isLoading:false,
-                search:search,
-                choice:choice,
-                offset:offset
-            })
-        }).catch(err =>console.log(err))
+        });
+    }*/
+
+    getMoreResults = ()=>{
+        const {search,choice,offset} = this.currentQuery;
+        this.getResults(search,choice,offset);
     }
 
-     changeLoading = (loading=true)=>{
-        console.log(this.state.offset)
-        if (this.state.offset !== 0){
-            this.setState({
-                isLoading:loading
-            })
-        }
-    }
     handleModal = (entityId)=>{
-            this.setState({
-                showModal : !this.state.showModal,
-                entityId : entityId,
-            })
+        this.setState({
+            showModal : !this.state.showModal,
+            entityId : entityId,
+        });
     }
 
     render() {
-        const {results,search,choice,isLoading,showModal,entityId,recordingCount} = this.state;
-        console.log(this.state.offset)
+        const {results,isLoading,showModal,entityId,recordingCount,showMoreResultsButton} = this.state;
         const spinner = <div className="d-flex justify-content-center">
                             <div className="spinner-border" role="status">
                                 <span className="sr-only">Loading...</span>
@@ -71,9 +77,9 @@ class App extends Component{
             <div className="App">
                 <Header/>
                 <SearchForm getData={this.getResults} loading={this.changeLoading}/>
-                <RecordingContainer  getData={this.getResults}  loading={this.changeLoading} results={results} count={recordingCount} search={search} choice={choice} handleModal={this.handleModal}/>
+                <RecordingContainer  getMoreData={this.getMoreResults}  loading={this.changeLoading} results={results} count={recordingCount} showMoreResults={showMoreResultsButton} handleModal={this.handleModal}/>
                 <ActionModal show={showModal} handleModal={this.handleModal} entityId={entityId}/>
-                {isLoading && spinner }
+                {renderIf(isLoading,spinner)}
             </div>
 
         )

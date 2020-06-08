@@ -1,5 +1,6 @@
 import React, {PureComponent} from 'react';
 import Recording from './Recording';
+import renderIf from "../helpers/renderIf";
 
 class RecordingContainer extends PureComponent {
     constructor(props) {
@@ -8,15 +9,13 @@ class RecordingContainer extends PureComponent {
     }
 
     moreResults = ()=>{
-        const {search,choice} = this.props;
-        this.props.loading();
-        this.props.getData(search,choice,this.offset);
-        this.offset = this.offset + 100;
+        this.props.getMoreData();
     }
 
     render() {
-        const {results,handleModal,count} = this.props;
-
+        const {results,handleModal,count,showMoreResults} = this.props;
+        const moreResultsButton = <div className="text-center"> <button className="btn btn-primary" onClick={this.moreResults}> plus de résultas</button> </div>;
+        const message =  <p className="text-center">Entrez un élément de recherche</p>;
         return (
             <div>
                 <p className="search-results">Résultats : {count}</p>
@@ -31,11 +30,12 @@ class RecordingContainer extends PureComponent {
                     </tr>
                     </thead>
                     <tbody>
-                        {results.map((recording,index)=><Recording {...recording} mbid={recording.id} key={recording.id} listNumber={index+1} handleModal={handleModal}/>)}
+                    {/*i used the index as a key because rendered items don’t have stable UUIDs*/}
+                        {results.map((recording,index)=><Recording {...recording}  key={index} listNumber={index+1} handleModal={handleModal}/>)}
                     </tbody>
                 </table>
-                {results.length>0 ?<div className="text-center"> <button className="btn btn-primary" onClick={this.moreResults}> plus de résultas</button> </div> : <p className="text-center">Entrez un élément de recherche</p>}
-
+                {renderIf(showMoreResults,moreResultsButton)}
+                {renderIf(!count,message)}
             </div>
         );
     }

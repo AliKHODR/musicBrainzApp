@@ -1,5 +1,5 @@
 class Requests {
-    async getRecordings(search='',choice='',offset= 0){
+    async getRecordings(search='',choice='',offset){
         try{
             let queryString = '';
             if(choice === 'artist'){

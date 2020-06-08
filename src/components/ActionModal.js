@@ -14,6 +14,10 @@ class ActionModal extends PureComponent {
     componentDidUpdate(prevProps, prevState, snapshot) {
         const{show,entityId} = this.props
         const{releasesId} = this.state
+        //disable overflow on body
+        if(show){
+            document.body.style.overflow = 'hidden';
+        }
         if(show && prevProps.entityId !== entityId ) {
             Requests.getEntity(entityId).then(res => {
                 if (res.hasOwnProperty('releases') && Array.isArray(res.releases)) {
@@ -25,7 +29,6 @@ class ActionModal extends PureComponent {
                 }
             }).catch(e=>console.log(e));
         }
-        //console.log('releasesId', this.releasesId);
         if (prevState.releasesId !== releasesId) {
             const promises = Promise.all(releasesId.map(id=>Requests.getCoverArt(id)));
             promises.then(data => {
@@ -50,12 +53,12 @@ class ActionModal extends PureComponent {
             images:[]
         })
         this.props.handleModal();
+        //enable overflow on body
+        document.body.style.overflow = 'unset';
     }
-
     render() {
         const {show} = this.props;
         const {entity,images,isLoading} = this.state;
-        console.log(entity)
         let artist,releases,genre,lengthInSeconds,rating = null;
         if(entity.hasOwnProperty('releases') && Array.isArray(entity.releases) && entity.releases.length > 0){
             releases = entity.releases.map(r => r.title);
@@ -77,10 +80,11 @@ class ActionModal extends PureComponent {
             artist = entity['artist-credit'][0].name;
         }
         const spinner = <div className="d-flex justify-content-center">
-            <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-            </div>;
-        </div>
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>;
+                        </div>
+        const message =  <p className="text-center img">Pas d'images</p>;
         return (
             <div className={'modal'+(show ?' show':'')} id="exampleModal" tabIndex="-1" role="dialog"
                  aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -102,6 +106,7 @@ class ActionModal extends PureComponent {
                             <h5>Cover Arts</h5><hr></hr>
                             {isLoading && spinner }
                             {images.map((i,index) =><img src={i.thumbnails.small} key={index} alt='album'/>)}
+                            {!isLoading && images.length <1 && message}
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.closeModal}>Fermer</button>

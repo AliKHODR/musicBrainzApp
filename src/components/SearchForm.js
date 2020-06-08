@@ -5,15 +5,24 @@ class SearchForm extends Component{
         super(props);
         this.state = {
             search : "",
-            choice : ""
+            choice : "",
+            disableSearchButton : false
         }
     }
 
     formSubmit= event=>{
         event.preventDefault();
         const {search,choice} = this.state;
-        //this.props.loading();
-        this.props.getData(search,choice);
+        this.props.getData(search,choice,0);
+        this.setState({
+            disableSearchButton : true
+        })
+        //forcing at least one second interval between each request
+        setTimeout(()=>{
+            this.setState({
+                disableSearchButton:false
+            })
+        },1000)
     }
 
     handleChange = event=>{
@@ -22,7 +31,7 @@ class SearchForm extends Component{
         })
     }
     render() {
-        const {search,choice} = this.state;
+        const {search,choice,disableSearchButton} = this.state;
         return (
             <div className="form ">
                 <form className=" pt-4" onSubmit={this.formSubmit}>
@@ -33,14 +42,14 @@ class SearchForm extends Component{
                         </div>
                         <div className="col-2 pt-4 mt-1">
                             <select value={choice} name="choice" className="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" onChange={this.handleChange}>
-                                <option value="everything">Everything</option>
+                                <option value="everything">Tout</option>
                                 <option value="artist">Artiste</option>
                                 <option value="recording">Titre</option>
                                 <option value="release">Album</option>
                             </select>
                         </div>
                         <div className="col-2 pt-4 mt-2">
-                            <button type="submit" className="btn btn-primary">Rechercher</button>
+                            <button type="submit" className="btn btn-primary" disabled={disableSearchButton}>Rechercher</button>
                         </div>
                     </div>
                 </form>

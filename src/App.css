@@ -49,6 +49,9 @@ body{
 .text-center{
   color: #DEC11E;
 }
+.text-center.img{
+  color: black;
+}
 .plus {
   --t:2px;   /* Thickness */
   --l:32px;  /* size of the symbol */
