@@ -59,26 +59,41 @@ class ActionModal extends PureComponent {
     render() {
         const {show} = this.props;
         const {entity,images,isLoading} = this.state;
-        let artist,releases,genre,lengthInSeconds,rating = null;
+        let artist,releases,genres,lengthInSeconds,rating = null;
         if(entity.hasOwnProperty('releases') && Array.isArray(entity.releases) && entity.releases.length > 0){
-            releases = entity.releases.map(r => r.title);
+            releases = entity.releases.map(r => {
+                if(r.hasOwnProperty('title')){
+                    return r.title
+                }
+                return null
+            });
             releases = releases.filter((item,pos)=> releases.indexOf(item) === pos)
         }
-        if(entity.hasOwnProperty('genres') && Array.isArray(entity.genres) && entity.genres.length > 0 && entity.genres[0].hasOwnProperty('name')){
-            genre = entity.genres[0].name;
+
+        if(entity.hasOwnProperty('genres') && Array.isArray(entity.genres) && entity.genres.length > 0 ){
+            genres = entity.genres.map(r => {
+                if(r.hasOwnProperty('name')){
+                    return r.name
+                }
+                return null
+            })
         }
+
         if(entity.hasOwnProperty('length') && entity.length){
             lengthInSeconds = entity.length/1000;
         }
+
         if(entity.hasOwnProperty('rating') && entity.rating.hasOwnProperty('value') && entity.rating.value){
             rating =entity.rating.value;
         }
+
         if(entity.hasOwnProperty('artist-credit') &&
             Array.isArray(entity['artist-credit']) &&
             entity['artist-credit'].length > 0 &&
             entity['artist-credit'][0].hasOwnProperty('name')){
             artist = entity['artist-credit'][0].name;
         }
+
         const spinner = <div className="d-flex justify-content-center">
                             <div className="spinner-border" role="status">
                                 <span className="sr-only">Loading...</span>
@@ -100,7 +115,7 @@ class ActionModal extends PureComponent {
                             <p>Titre : {entity.title}</p>
                             <p>Artistes :{artist && artist} </p>
                             <p>{releases && `Albums : ${releases.map(r =>`${r}`)}`}</p>
-                            <p>{genre && `Genre : ${genre}` }</p>
+                            <p>{genres && `Genre : ${genres.map(r=>`${r}`)}`}</p>
                             <p> {`Durée :${Math.floor(lengthInSeconds/60)}m${Math.round(lengthInSeconds%60)}s` } </p>
                             <p>{rating && `Rating : ${rating}/5`} </p>
                             <h5>Cover Arts</h5><hr></hr>
