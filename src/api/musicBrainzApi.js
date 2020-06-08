@@ -20,6 +20,7 @@ class Requests {
             console.log(e)
         }
     }
+
     async getEntity(mbid=''){
         try{
             const response = await fetch(`https://musicbrainz.org/ws/2/recording/${mbid}?inc=ratings+genres+releases+artists&fmt=json`);
@@ -30,6 +31,7 @@ class Requests {
             console.log(e)
         }
     }
+
     async getCoverArt(id=''){
         try{
             const response = await fetch(`https://coverartarchive.org/release/${id}`);
@@ -40,8 +42,5 @@ class Requests {
             console.log(e)
         }
     }
-  /*   getCoverArt(id=''){
-         return fetch(`https://coverartarchive.org/release/${id}`).then(res=>res.json())
-    }*/
 }
 export default new Requests();

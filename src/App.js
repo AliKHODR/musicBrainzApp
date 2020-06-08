@@ -48,12 +48,6 @@ class App extends Component{
         }).catch(err =>console.log(err));
     }
 
-  /*   changeLoading = (loading=true)=>{
-        this.setState({
-            isLoading:true
-        });
-    }*/
-
     getMoreResults = ()=>{
         const {search,choice,offset} = this.currentQuery;
         this.getResults(search,choice,offset);
